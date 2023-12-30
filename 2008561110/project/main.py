@@ -2,11 +2,11 @@ from PIL import Image
 import tkinter as tk
 from tkinter import filedialog, messagebox
 
-class Backend:
+class Program:
     def __init__(self, image_path):
         self.image_path = image_path
 
-    # Fungsi penyisipan pesan ke gambar
+    
     def embed_message(self, message, output_path=None):
         image = Image.open(self.image_path)
         binary_message = self.text_to_binary(message)
@@ -36,7 +36,7 @@ class Backend:
 
         return new_image
 
-    # Fungsi mengambil pesan dari gambar
+    
     def extract_message(self, output_path=None):
         image = Image.open(self.image_path)
         pixels = list(image.getdata())
@@ -64,12 +64,12 @@ class Backend:
         else:
             return "Tidak ada pesan di gambar ini."
 
-    # Fungsi mengubah teks ke biner
+    
     def text_to_binary(self, text):
         binary_message = ''.join(format(ord(char), '08b') for char in text)
         return binary_message
 
-    # Fungsi mengubah biner ke teks
+    
     def binary_to_text(self, binary):
         text = ''.join(chr(int(binary[i:i+8], 2)) for i in range(0, len(binary), 8))
         return text
@@ -107,7 +107,7 @@ class GUI:
         tk.Button(self.root, text="Konfirmasi", command=self.embed).pack(pady=5)
         tk.Button(self.root, text="Kembali", command=self.main_menu).pack(pady=55)
 
-    # Tampilan menu tampilkan pesan
+    
     def extract_message(self):
         self.clear_window()
 
@@ -118,7 +118,7 @@ class GUI:
         tk.Button(self.root, text="Tampilkan Pesan", command=self.display_message).pack(pady=55)
         tk.Button(self.root, text="Kembali", command=self.main_menu).pack(pady=55)
     
-    # Fungsi pemilihan gambar
+   
     def choose_image(self):
         self.image_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.jpg;*.png;*.jpeg;*.bmp")])
         if not self.image_path:
@@ -128,7 +128,7 @@ class GUI:
         if self.image_path:
             self.image_path_label.config(text=f"Path Gambar: {self.image_path}", wraplength=300)
 
-    # Fungsi penyisipan pesan di GUI
+    
     def embed(self):
         if not self.image_path:
             self.show_warning("Pilih gambar terlebih dahulu!")
@@ -140,7 +140,7 @@ class GUI:
             return
 
         try:
-            steganography = Backend(self.image_path)
+            steganography = Program(self.image_path)
             embedded_image_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")])
             if not embedded_image_path:
                 return
@@ -151,20 +151,20 @@ class GUI:
         except Exception as e:
             self.show_warning(f"Error: {str(e)}")
 
-    # Fungsi menampilkan pesan di GUI
+    
     def display_message(self):
         if not self.image_path:
             self.show_warning("Pilih gambar terlebih dahulu.")
             return
 
         try:
-            steganography = Backend(self.image_path)
+            steganography = Program(self.image_path)
             message = steganography.extract_message()
             messagebox.showinfo("Hasil", f"pesan yang disisipkan: \n{message}")
         except Exception as e:
             self.show_warning(f"Error: {str(e)}")
 
-    # Fungsi menampilkan peringatan
+    
     def show_warning(self, message):
         messagebox.showwarning("Peringatan", message)
 
